@@ -1,8 +1,12 @@
-# Evolver Sprite Tool
+<div align="center">
+  Evolver Sprite Tool: generating standardized assets for Evolver.
+</div>
+
+---
+
+This is a command line tool for opinionated image manipulation with type conversion, scaling, and chroma keying.
 
 ## Usage
-
-This image manipulation tool supports type conversion, scaling, and chroma keying.
 
 ### Directory Structure
 
