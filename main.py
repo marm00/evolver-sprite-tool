@@ -1,8 +1,6 @@
 import argparse
 import glob
 import os
-from pathlib import Path
-import re
 from PIL import Image
 
 
@@ -32,43 +30,7 @@ def get_absolute_paths(input_string, ignore_extensions):
     return absolute_paths
 
 
-def collect_images(input_arg):
-    # List to hold the collected file paths
-    files = []
-
-    # Check if the input path is a directory
-    if os.path.isdir(input_arg):
-        # Collect all files from the directory except .gitkeep
-        files = [
-            f
-            for f in glob.glob(os.path.join(input_arg, "*"))
-            if not f.endswith(".gitkeeep")
-        ]
-
-    # Check if the input path is a file
-    elif os.path.isfile(input_arg):
-        files = [input_arg]
-
-    # If the input is neither a directory nor a file, treat it as a regex pattern
-    else:
-        # Get all files in the current directory and subdirectories
-        all_files = [
-            os.path.join(root, file)
-            for root, _, files in os.walk(".")
-            for file in files
-        ]
-        # Filter files based on the regex pattern
-        pattern = re.compile(input_arg)
-        files = [
-            file
-            for file in all_files
-            if pattern.search(file) and not file.endswith(".gitkeep")
-        ]
-
-    return files
-
-
-def convert_image(input_arg, output_path, size, transparent_green):
+def convert_image(input_arg, output_path, size, transparent_green, format):
     # Open an image file
     with Image.open(input_arg) as img:
         # Resize the image
@@ -88,7 +50,7 @@ def convert_image(input_arg, output_path, size, transparent_green):
             img.putdata(new_data)
 
         # Save the image
-        img.save(output_path, "PNG")
+        img.save(output_path, format)
 
 
 def main():
@@ -107,7 +69,7 @@ def main():
         "--output",
         type=str,
         default="./out",
-        help="Output image file path (in png format).",
+        help="Output image file path.",
     )
     parser.add_argument(
         "-s",
@@ -115,6 +77,13 @@ def main():
         type=str,
         default="64x64",
         help="Output image size in WIDTHxHEIGHT format (default: 64x64).",
+    )
+    parser.add_argument(
+        "-f",
+        "--format",
+        type=str,
+        default="PNG",
+        help="Output image format (default: PNG). Make sure to capitalize the extension and exclude the period.",
     )
     parser.add_argument(
         "-t",
@@ -148,7 +117,7 @@ def main():
     # os.makedirs(os.path.dirname(args.output), exist_ok=True)
 
     # Convert the image
-    # convert_image(args.input, args.output, (width, height), args.transparent_green)
+    # convert_image(args.input, args.output, (width, height), args.transparent_green, args.format)
 
 
 if __name__ == "__main__":

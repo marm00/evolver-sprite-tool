@@ -21,4 +21,5 @@ The tool recognizes these options:
 
 | Option | Description | Default |
 | --- | --- | --- |
-| `--input` or `i` | The file(s) to process (file name, directory name, or regex pattern) | `./in` |
+| `--input`, `-i` | The file(s) to process (file name, directory name, or regex pattern) | `./in` |
+| `--format`, `-f` | The image format to convert to, make sure to capitalize the extension and exclude the period. | `PNG` |
