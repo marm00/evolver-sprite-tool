@@ -1,4 +1,4 @@
-# Evolver Asset Standardization CLI
+# Evolver Sprite Tool
 
 ## Usage
 
