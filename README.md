@@ -21,5 +21,5 @@ The tool recognizes these options:
 
 | Option | Description | Default |
 | --- | --- | --- |
-| `--input`, `-i` | The file(s) to process (file name, directory name, or regex pattern) | `./in` |
-| `--format`, `-f` | The image format to convert to (e.g. PNG, JPEG, BMP) | `PNG` |
+| `-i`, `--input` | The file(s) to process (file name, directory name, or regex pattern) | `./in` |
+| `-f`, `--format` | The image format to convert to (e.g. PNG, JPEG, BMP) | `PNG` |
