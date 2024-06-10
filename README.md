@@ -42,13 +42,15 @@ The tool recognizes these options:
 | `-i`, `--input` | The file(s) to process (file name, directory name, or [glob pattern](https://docs.python.org/3/library/glob.html)) | `./in` |
 | `-o`, `--output`| The output folder for the processed images | `./out` |
 | `--ignore` | File extensions to ignore (e.g., txt jpg .zip .png) | `gitkeep` |
-| `-f`, `--format` | Override the inferred output image format | `None` |
+| `-f`, `--format` | Override the inferred output image format *([note](#note))* | `None` |
 | `-s`, `--size` | The output image size in WIDTHxHEIGHT format | `64x64` |
-| `-m`, `--mask` | Turn pixels transparent if similar to the defined mask [note](#notew) | `0,255,0,100` |
+| `-m`, `--mask` | Turn pixels transparent if similar to the defined mask *([note](#note))* | `0,255,0,100` |
 
-#### NoteW
+#### Note
 
-Transparentize pixels matching this mask in RED,GREEN,BLUE,THRESHOLD format (e.g. 0,255,0,100). The transparent mask is applied to pixels with a [euclidean distance](https://en.wikipedia.org/wiki/Euclidean_distance) below the threshold. If mask is used and the final format does not support RGBA, the output format will be PNG
+Not all image formats support the **A**lpha channel in RGB**A**. This program changes the destination file extension to PNG (for transparentization) if either the original extension or the provided `--format` is not one of PNG, TIFF, WEBP, or GIF.
+
+For each image pixel, the [euclidean distance](https://en.wikipedia.org/wiki/Euclidean_distance) is calculated from its RGB values to the provided mask RGB (like full green at 0,255,0). If this distance is shorter than the provided threshold, the pixel is converted to 255,255,255,0 (alpha channel at 0 = transparent).
 
 ### Requirements
 
