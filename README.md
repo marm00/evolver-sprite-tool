@@ -20,7 +20,7 @@ Processed 2/2 images in 0.05 seconds. View results in {absolute path}\out.
 $ python evolver.py --input D:/images/old --output D:/images/new
 Processed 2/2 images in 0.07 seconds. View results in D:\images\new.
 
-$ python evolver.py --input ./in/**/*.png --output .\newfolder
+$ python evolver.py --input ./in/**/*.webp --output .\newfolder
 Processed 9/9 images in 0.12 seconds. View results in {absolute path}\newfolder.
 
 $ python evolver.py --input ./in/wolf/*grey*.jpeg --ignore txt .zip png
@@ -45,11 +45,11 @@ The tool recognizes these options:
 | `-f`, `--format` | Override the inferred output image format *([note](#note))* | `None` |
 | `-s`, `--size` | The output image size in WIDTHxHEIGHT format | `64x64` |
 | `-m`, `--mask` | Turn pixels transparent if similar to the defined mask *([note](#note))* | `0,255,0,100` |
-| `-c`, `--center` | Center the image, ensure that `--mask` matches the background *([note](#note))* | `True` |
+| `-c`, `--center` | Center the image, 0 or 1 (default), ensure that `--mask` matches the background *([note](#note))* | `1` |
 
 #### Note
 
-Not all image formats support the **A**lpha channel in RGB**A**. This program changes the destination file extension to PNG for transparentization when the file extension or `--format` is not one of PNG, TIFF, WEBP, or GIF.
+Not all image formats support the **A**lpha channel in RGB**A**. This program changes the destination file extension to WEBP for transparentization when the file extension or `--format` is not one of PNG, TIFF, WEBP, or GIF.
 
 For each image pixel, the [euclidean distance](https://en.wikipedia.org/wiki/Euclidean_distance) is calculated from its RGB values to the provided mask RGB (like full green at 0,255,0). If this distance is shorter than the provided threshold, the pixel is converted to 255,255,255,0.
 

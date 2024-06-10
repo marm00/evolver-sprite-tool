@@ -2,6 +2,7 @@ import argparse
 import glob
 import math
 import os
+import subprocess
 import time
 from PIL import Image
 
@@ -52,7 +53,7 @@ def valid_output_file(output_directory: str, file_path: str, format: str, mask_r
             os.remove(temp_file_path)
 
     if mask_rgb and not any((format == rgba_format or file_ext[1:].upper() == rgba_format) for rgba_format in ["PNG", "TIFF", "WEBP", "GIF"]):
-        format = "PNG"
+        format = "WEBP"
             
     if format:
         new_path_file = f"{file_root}.{format.lower()}"
@@ -75,7 +76,6 @@ def process_image(
     try:
         with Image.open(file_path) as img:
             img = img.resize(size, Image.LANCZOS)
-
             if mask_rgb and mask_threshold:
                 img = img.convert("RGBA")
                 data = img.getdata()
@@ -108,7 +108,6 @@ def process_image(
                 )
             except OSError:
                 error_message = skip("the output file could not be written (it still might be created!).")
-
     except FileNotFoundError:
         error_message = skip("the file cannot be found.")
     except Image.UnidentifiedImageError:
@@ -188,9 +187,18 @@ def main():
     parser.add_argument(
         "-c",
         "--center",
-        action="store_true",
-        default=True,
-        help="Center the image, ensure that --mask matches the background (default: True).",
+        type=int,
+        choices=[0, 1],
+        default=1,
+        help="Center the image, 0 or 1 (default), ensure that --mask matches the background." 
+    )
+    parser.add_argument(
+        "-p",
+        "--pack",
+        type=int,
+        choices=[0, 1],
+        default=1,
+        help="Use TexturePacker to convert output into a single sprite sheet, 0 or 1 (default)."
     )
 
     args = parser.parse_args()
@@ -208,8 +216,11 @@ def main():
     print(
         f"Processed {success_count}/{len(input_files)} images in {time.time() - start_time:.2f} seconds. "
         f"{f"View results in {output_directory}." if (success_count > 0) else 'No images were processed.'}"
-
     )
+
+    if args.pack:
+        cmd = f"TexturePacker {output_directory} --sheet {time.time()} --texture-format webp --format json"
+        # subprocess.run(cmd)
 
 if __name__ == "__main__":
     main()
