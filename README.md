@@ -2,7 +2,7 @@
 
 Transform images into standardized assets for [Evolver](https://github.com/marm00/evolver).
 
-This is a command line tool for opinionated image manipulation with type conversion, scaling, and chroma keying.
+This is a command line tool for opinionated image manipulation with [PIL](https://pillow.readthedocs.io/).
 
 ## Usage
 
@@ -42,9 +42,13 @@ The tool recognizes these options:
 | `-i`, `--input` | The file(s) to process (file name, directory name, or [glob pattern](https://docs.python.org/3/library/glob.html)) | `./in` |
 | `-o`, `--output`| The output folder for the processed images | `./out` |
 | `--ignore` | File extensions to ignore (e.g., txt jpg .zip .png) | `gitkeep` |
-| `-f`, `--format` | Override the inferred output image format, defaults to PNG if mask is used and the final format does not support RGBA | `None` |
-| `-s`, `--size` | The output image size in WIDTHxHEIGHT format (e.g. 64x64) | `64x64` |
-| `-m`, `--mask` | Transparentize pixels matching this mask in RED,GREEN,BLUE,THRESHOLD format (e.g. 0,255,0,100). The transparent mask is applied to pixels with a [euclidean distance](https://en.wikipedia.org/wiki/Euclidean_distance) below the threshold. If mask is used and the final format does not support RGBA, the output format will be PNG | `0,255,0,100` |
+| `-f`, `--format` | Override the inferred output image format | `None` |
+| `-s`, `--size` | The output image size in WIDTHxHEIGHT format | `64x64` |
+| `-m`, `--mask` | Turn pixels transparent if similar to the defined mask [note](#notew) | `0,255,0,100` |
+
+#### NoteW
+
+Transparentize pixels matching this mask in RED,GREEN,BLUE,THRESHOLD format (e.g. 0,255,0,100). The transparent mask is applied to pixels with a [euclidean distance](https://en.wikipedia.org/wiki/Euclidean_distance) below the threshold. If mask is used and the final format does not support RGBA, the output format will be PNG
 
 ### Requirements
 
