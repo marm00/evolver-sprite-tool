@@ -38,7 +38,7 @@ Processed 1/1 images in 0.04 seconds. View results in {absolute path}\out.
 The tool recognizes these options:
 
 | Option | Description | Default |
-| :---: | --- | :---: |
+| --- | --- | :---: |
 | `-i` or `--input` | The file(s) to process (file name, directory name, or [glob pattern](https://docs.python.org/3/library/glob.html)) | `./in` |
 | `-o` or `--output`<br>| The output folder for the processed images | `./out` |
 | `--ignore` | File extensions to ignore (e.g., txt jpg .zip .png) | `gitkeep` |
