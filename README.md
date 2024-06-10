@@ -26,7 +26,7 @@ Processed 9/9 images in 0.12 seconds. View results in {absolute path}\newfolder.
 $ python evolver.py --input ./in/wolf/*grey*.jpeg --ignore txt .zip png
 Processed 1/1 images in 0.04 seconds. View results in {absolute path}\out.
 
-$ python evolver.py --format PNG -size 128x128
+$ python evolver.py --format PNG -size 128x128 --center 0
 Processed 4/4 images in 0.08 seconds. View results in {absolute path}\out.
 
 $ python evolver.py --mask 255,0,0,50
@@ -45,7 +45,7 @@ The tool recognizes these options:
 | `-f`, `--format` | Override the inferred output image format *([note](#note))* | `None` |
 | `-s`, `--size` | The output image size in WIDTHxHEIGHT format | `64x64` |
 | `-m`, `--mask` | Turn pixels transparent if similar to the defined mask *([note](#note))* | `0,255,0,100` |
-| `-c`, `--center` | Center the image, 0 or 1 (default), ensure that `--mask` matches the background *([note](#note))* | `1` |
+| `-c`, `--center` | Center the image, 0 or 1 (default). Match `--mask`! *([note](#note))* | `1` |
 
 #### Note
 
