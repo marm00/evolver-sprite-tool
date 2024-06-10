@@ -59,27 +59,6 @@ def valid_output_file(output_directory: str, file_path: str, format: str, mask_r
 
     return new_path_file
 
-def convert_image(input_arg, output_path, size, mask, format):
-    # Open an image file
-    with Image.open(input_arg) as img:
-        # Resize the image
-        img = img.resize(size, Image.ANTIALIAS)
-
-        # Convert pixels matching the mask to transparent
-        if mask:
-            img = img.convert("RGBA")
-            data = img.getdata()
-            new_data = []
-            for item in data:
-                if item[:3] == mask:
-                    new_data.append((255, 255, 255, 0))
-                else:
-                    new_data.append(item)
-            img.putdata(new_data)
-
-        # Save the image
-        img.save(output_path, format)
-
 def process_image(
     file_path: str, output_directory: str, format: str, size: tuple[int, int], mask: tuple[tuple[int, int, int], int], center: bool) -> bool:
     def skip(message):
