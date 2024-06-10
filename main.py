@@ -61,7 +61,7 @@ def convert_image(input_arg, output_path, size, transparent_green, format):
         img.save(output_path, format)
 
 
-def main(x: list[str]):
+def main():
     parser = argparse.ArgumentParser(
         description="Evolver CLI Tool for Image Standardization."
     )
@@ -132,4 +132,3 @@ def main(x: list[str]):
 
 if __name__ == "__main__":
     main()
-    a: list[str] = [""]
