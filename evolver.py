@@ -69,10 +69,8 @@ def setup_output_directory(output_path: str) -> str:
     return os.path.abspath(output_path)
 
 def valid_output_file(output_directory: str, file_path: str, format: str) -> bool:
-    inferred_file_path = os.path.join(output_directory, os.path.basename(file_path))
-    file_root, _ = os.path.splitext(inferred_file_path)
-    formatted_file_path = f"{file_root}.{format.lower()}"
-    temp_file_path = f"{file_root}.{format.lower()}.tmp"
+    new_path_file = os.path.join(output_directory, os.path.basename(file_path))
+    temp_file_path = f"{new_path_file}.tmp"
 
     try:
         with open(temp_file_path, "wb") as temp_file:
@@ -82,8 +80,12 @@ def valid_output_file(output_directory: str, file_path: str, format: str) -> boo
     finally:
         if os.path.exists(temp_file_path) and os.path.isfile(temp_file_path):
             os.remove(temp_file_path)
+            
+    if format:
+        file_root, _ = os.path.splitext(new_path_file)
+        new_path_file = f"{file_root}.{format.lower()}"
 
-    return formatted_file_path
+    return new_path_file
 
 def process_image(
     file_path: str, output_directory: str, format: str, size: tuple[int, int]
@@ -159,7 +161,7 @@ def main():
         type=str,
         nargs="*",
         default=["gitkeep"],
-        help="File extensions to ignore (e.g., txt md .zip .png). Defaults to ['gitkeep'].",
+        help="File extensions to ignore (e.g., txt jpg .zip .png). Defaults to ['gitkeep'].",
     )
     parser.add_argument(
         "-f",

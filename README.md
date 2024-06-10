@@ -23,7 +23,7 @@ Processed 2/2 images in 0.00 seconds. View results in D:\images\new.
 $ python evolver.py -i **/*.webp -o .\newfolder
 Processed 1/1 images in 0.00 seconds. View results in {absolute path}\newfolder.
 
-$ python evolver.py -i ./in/wolf/*grey*.jpeg
+$ python evolver.py -i ./in/wolf/*grey*.jpeg --ignore txt .zip png
 Processed 1/1 images in 0.00 seconds. View results in .\out.
 ```
 
@@ -35,7 +35,7 @@ The tool recognizes these options:
 | --- | --- | --- |
 | `-i`, `--input` | The file(s) to process (file name, directory name, or [glob pattern](https://docs.python.org/3/library/glob.html)) | `./in` |
 | `-o`, `--output` | The output folder for the processed images | `./out` |
-| `--ignore` | File extensions to ignore (e.g., txt md .zip .png) | `gitkeep` |
+| `--ignore` | File extensions to ignore (e.g., txt jpg .zip .png) | `gitkeep` |
 | `-f`, `--format` | Override the inferred output image format (e.g. PNG, JPEG, BMP) | `None` |
 | `-s`, `--size` | The output image size in WIDTHxHEIGHT format (e.g. 64x64) | `64x64` |
 
