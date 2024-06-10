@@ -29,5 +29,5 @@ The tool recognizes these options:
 
 ### Requirements
 
-- Python 3.9 or higher *determined with [vermin](https://github.com/netromdk/vermin):*  
+- Python 3.9 or higher *(determined with [vermin](https://github.com/netromdk/vermin))*  
 `vermin t=3.7- --backport argparse --eval-annotations --no-parse-comments`
