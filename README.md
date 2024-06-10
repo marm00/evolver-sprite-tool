@@ -48,7 +48,7 @@ The tool recognizes these options:
 
 #### Note
 
-Not all image formats support the **A**lpha channel in RGB**A**. This program changes the destination file extension to PNG (for transparentization) if either the original extension or the provided `--format` is not one of PNG, TIFF, WEBP, or GIF.
+Not all image formats support the **A**lpha channel in RGB**A**. This program changes the destination file extension to PNG for transparentization when the file extension or `--format` is not one of PNG, TIFF, WEBP, or GIF.
 
 For each image pixel, the [euclidean distance](https://en.wikipedia.org/wiki/Euclidean_distance) is calculated from its RGB values to the provided mask RGB (like full green at 0,255,0). If this distance is shorter than the provided threshold, the pixel is converted to 255,255,255,0 (alpha channel at 0 = transparent).
 
