@@ -4,11 +4,21 @@ import os
 from PIL import Image
 
 
-def get_absolute_paths(input_string, ignore_extensions):
-    if not os.path.isabs(input_string):
-        input_string = os.path.abspath(input_string)
+def get_absolute_paths(input: str, ignore: list[str]) -> list[str]:
+    """
+    Get absolute paths for files in a directory or matching a pattern.
 
-    matched_paths = glob.glob(input_string)
+    Args:
+        input (str): The input string representing a file name, directory name, or pattern (e.g., glob pattern).
+        ignore (list[str]): A list of file extensions to ignore. Extensions should include the period (e.g., ".txt").
+
+    Returns:
+        list[str]: A list of absolute paths for files that match the input, excluding those with ignored extensions.
+    """
+    if not os.path.isabs(input):
+        input = os.path.abspath(input)
+
+    matched_paths = glob.glob(input)
     all_files = set()
 
     for path in matched_paths:
@@ -21,9 +31,7 @@ def get_absolute_paths(input_string, ignore_extensions):
             all_files.add(path)
 
     filtered_files = [
-        file
-        for file in all_files
-        if not any(file.endswith(ext) for ext in ignore_extensions)
+        file for file in all_files if not any(file.endswith(ext) for ext in ignore)
     ]
 
     absolute_paths = [os.path.abspath(file) for file in filtered_files]
@@ -53,7 +61,7 @@ def convert_image(input_arg, output_path, size, transparent_green, format):
         img.save(output_path, format)
 
 
-def main():
+def main(x: list[str]):
     parser = argparse.ArgumentParser(
         description="Evolver CLI Tool for Image Standardization."
     )
@@ -69,7 +77,7 @@ def main():
         "--output",
         type=str,
         default="./out",
-        help="Output image file path.",
+        help="Directory for output images. Defaults to './out'.",
     )
     parser.add_argument(
         "-s",
@@ -100,6 +108,8 @@ def main():
     )
 
     args = parser.parse_args()
+    if not os.path.isabs(args.output):
+        input_string = os.path.abspath(args.output)
     ignore_extensions = [
         ext if ext.startswith(".") else f".{ext}" for ext in args.ignore
     ]
@@ -122,3 +132,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    a: list[str] = [""]
