@@ -27,5 +27,4 @@ The tool recognizes these options:
 
 ### Requirements
 
-- Python 3.9 or higher
-  *Determined with `vermin t=3.7- --backport argparse --eval-annotations --no-parse-comments`*
+- Python 3.9 or higher *(determined with `vermin t=3.7- --backport argparse --eval-annotations --no-parse-comments`)*
