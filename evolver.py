@@ -68,28 +68,61 @@ def setup_output_directory(output_path: str) -> str:
             raise Exception(f"Incorrect format for output path: {e}")
     return os.path.abspath(output_path)
 
+def valid_output_file(output_directory: str, file_path: str, format: str) -> bool:
+    inferred_file_path = os.path.join(output_directory, os.path.basename(file_path))
+    file_root, _ = os.path.splitext(inferred_file_path)
+    formatted_file_path = f"{file_root}.{format.lower()}"
+    temp_file_path = f"{file_root}.{format.lower()}.tmp"
 
-def process_image(file_path: str, size: tuple[int, int]) -> bool:
-    error_message = ""
+    try:
+        with open(temp_file_path, "wb") as temp_file:
+            temp_file.write(b"")
+    except Exception:
+        return False
+    finally:
+        if os.path.exists(temp_file_path) and os.path.isfile(temp_file_path):
+            os.remove(temp_file_path)
 
+    return formatted_file_path
+
+def process_image(
+    file_path: str, output_directory: str, format: str, size: tuple[int, int]
+) -> bool:
     def skip(message):
         formatted_error = f"WARNING: Skipping {file_path} because {message}"
         print(formatted_error)
         return formatted_error
+    
+    new_file_path = valid_output_file(output_directory, file_path, format)
+    if not new_file_path:
+        return skip("A temp file could not be created. Check the path, file type and permissions.")
+    error_message = ""
 
     try:
         with Image.open(file_path) as img:
             print(f"target size: {size} and img size: {img.size}")
+            print(f"type is {format}")
+            try:
+                img.save(new_file_path, format)
+            except KeyError:
+                error_message = skip(f"the format type {format} is not supported.") 
+            except ValueError:
+                error_message = skip(
+                    "the output format could not be determined from the file name."
+                )
+            except OSError:
+                error_message = skip("the output file could not be written.")
+
     except FileNotFoundError:
-        error_message = skip(f"the file cannot be found.")
+        error_message = skip("the file cannot be found.")
     except Image.UnidentifiedImageError:
-        error_message = skip(f"the found file cannot be opened and identified.")
+        error_message = skip("the found file cannot be opened and identified.")
     except ValueError:
         error_message = skip(
-            f"the 'mode' is not r, or a StringIO instance is used for 'fp'."
+            "the 'mode' is not r, or a StringIO instance is used for 'fp'."
         )
     except TypeError:
-        error_message = skip(f"'formats' is not None, a list or a tuple.")
+        error_message = skip("'formats' is not None, a list or a tuple.")
 
     return False if error_message else True
 
@@ -132,8 +165,8 @@ def main():
         "-f",
         "--format",
         type=str,
-        default="PNG",
-        help="Output image format (default: PNG). Make sure to capitalize the extension and exclude the period.",
+        default=None,
+        help="Override the inferred output image format (e.g., PNG, JPEG, BMP).",
     )
     parser.add_argument(
         "-s",
@@ -151,16 +184,21 @@ def main():
 
     args = parser.parse_args()
 
-    output_path = setup_output_directory(args.output)
+    output_directory = setup_output_directory(args.output)
     ignore_extensions = [f".{ext.lstrip('.')}" for ext in args.ignore]
     input_files = get_absolute_paths(args.input, ignore_extensions)
     print(args.size)
 
-    success_count = sum(1 for success in input_files if process_image(success, args.size))
+    success_count = sum(
+        1
+        for success in input_files
+        if process_image(success, output_directory, args.format, args.size)
+    )
 
     print(
         f"Processed {success_count}/{len(input_files)} images in {time.time() - start_time:.2f} seconds. "
-        f"{'View results in {output_path}.' if (success_count > 0) else 'No images were processed.'}"
+        f"{f"View results in {output_directory}." if (success_count > 0) else 'No images were processed.'}"
+
     )
 
     # Parse the size argument
