@@ -15,7 +15,7 @@ This is a command line tool for opinionated image manipulation with [PIL](https:
 
 ```console
 $ python evolver.py
-Processed 2/2 images in 0.5 seconds. View results in {absolute path}\out.
+Processed 2/2 images in 0.05 seconds. View results in {absolute path}\out.
 
 $ python evolver.py --input D:/images/old --output D:/images/new
 Processed 2/2 images in 0.07 seconds. View results in D:\images\new.
@@ -27,10 +27,10 @@ $ python evolver.py --input ./in/wolf/*grey*.jpeg --ignore txt .zip png
 Processed 1/1 images in 0.04 seconds. View results in {absolute path}\out.
 
 $ python evolver.py --format PNG -size 128x128
-Processed 1/1 images in 0.05 seconds. View results in {absolute path}\out.
+Processed 4/4 images in 0.08 seconds. View results in {absolute path}\out.
 
 $ python evolver.py --mask 255,0,0,50
-Processed 1/1 images in 0.04 seconds. View results in {absolute path}\out.
+Processed 1/1 images in 0.06 seconds. View results in {absolute path}\out.
 ```
 
 ### Option Summary
