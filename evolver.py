@@ -1,5 +1,6 @@
 import argparse
 import glob
+import math
 import os
 import time
 from PIL import Image
@@ -36,8 +37,9 @@ def setup_output_directory(output_path: str) -> str:
             raise Exception(f"Incorrect format for output path: {e}")
     return os.path.abspath(output_path)
 
-def valid_output_file(output_directory: str, file_path: str, format: str) -> str | bool:
+def valid_output_file(output_directory: str, file_path: str, format: str, mask_rgb: tuple[int, int, int]) -> str | bool:
     new_path_file = os.path.join(output_directory, os.path.basename(file_path))
+    file_root, file_ext = os.path.splitext(new_path_file)
     temp_file_path = f"{new_path_file}.tmp"
 
     try:
@@ -48,27 +50,28 @@ def valid_output_file(output_directory: str, file_path: str, format: str) -> str
     finally:
         if os.path.exists(temp_file_path) and os.path.isfile(temp_file_path):
             os.remove(temp_file_path)
+
+    if mask_rgb and not any((format == rgba_format or file_ext[1:].upper() == rgba_format) for rgba_format in ["PNG", "TIFF", "WEBP", "GIF"]):
+        format = "PNG"
             
     if format:
-        file_root, _ = os.path.splitext(new_path_file)
         new_path_file = f"{file_root}.{format.lower()}"
 
     return new_path_file
 
-def convert_image(input_arg, output_path, size, transparent_green, format):
+def convert_image(input_arg, output_path, size, mask, format):
     # Open an image file
     with Image.open(input_arg) as img:
         # Resize the image
         img = img.resize(size, Image.ANTIALIAS)
 
-        # Convert green pixels to transparent
-        if transparent_green:
+        # Convert pixels matching the mask to transparent
+        if mask:
             img = img.convert("RGBA")
             data = img.getdata()
             new_data = []
             for item in data:
-                # Change all green (0, 255, 0) pixels to transparent
-                if item[0] == 0 and item[1] == 255 and item[2] == 0:
+                if item[:3] == mask:
                     new_data.append((255, 255, 255, 0))
                 else:
                     new_data.append(item)
@@ -78,22 +81,35 @@ def convert_image(input_arg, output_path, size, transparent_green, format):
         img.save(output_path, format)
 
 def process_image(
-    file_path: str, output_directory: str, format: str, size: tuple[int, int]
+    file_path: str, output_directory: str, format: str, size: tuple[int, int], mask: tuple[tuple[int, int, int], int]
 ) -> bool:
     def skip(message):
         formatted_error = f"WARNING: Skipping {file_path} because {message}"
         print(formatted_error)
         return formatted_error
     
-    new_file_path = valid_output_file(output_directory, file_path, format)
+    mask_rgb, mask_threshold = mask
+    new_file_path = valid_output_file(output_directory, file_path, format, mask_rgb)
     if not new_file_path:
         return skip("A temp file could not be created. Check the path, file type and permissions.")
     error_message = ""
 
     try:
         with Image.open(file_path) as img:
-            print(f"Processing {file_path}")
             img = img.resize(size, Image.LANCZOS)
+
+            if mask_rgb and mask_threshold:
+                img = img.convert("RGBA")
+                data = img.getdata()
+                new_data = []
+                for item in data:
+                    euclidean_distance = math.sqrt(sum((a - b) ** 2 for a, b in zip(item[:3], mask_rgb)))
+                    if euclidean_distance < mask_threshold:
+                        new_data.append((255, 255, 255, 0))  # Transparent
+                    else:
+                        new_data.append(item)
+                img.putdata(new_data)
+
             try:
                 img.save(new_file_path, format)
             except KeyError:
@@ -125,6 +141,13 @@ def size_type(size: str) -> tuple[int, int]:
         return (width, height)
     except ValueError:
         raise argparse.ArgumentTypeError("Size must be in WIDTHxHEIGHT format.")
+    
+def mask_type(mask: str) -> tuple[tuple[int, int, int], int]:
+    try:
+        red, green, blue, threshold = map(int, mask.split(","))
+        return ((red, green, blue), threshold)
+    except ValueError:
+        raise argparse.ArgumentTypeError("Mask must be in RED,GREEN,BLUE,THRESHOLD format.")
 
 
 def main():
@@ -158,7 +181,8 @@ def main():
         "--format",
         type=str,
         default=None,
-        help="Override the inferred output image format (e.g., PNG, JPEG, BMP).",
+        help="Override the inferred output image format (e.g., PNG, JPEG, BMP). \
+            If mask is used and the format does not support RGBA, the output format will be PNG.",
     )
     parser.add_argument(
         "-s",
@@ -168,10 +192,13 @@ def main():
         help="Output image size in WIDTHxHEIGHT format (default: 64x64).",
     )
     parser.add_argument(
-        "-t",
-        "--transparent-green",
-        action="store_true",
-        help="Convert green pixels (0,255,0) to transparent.",
+        "-m",
+        "--mask",
+        type=mask_type,
+        default=((0, 255, 0), 100),
+        help="Transparentize pixels matching this mask in RED,GREEN,BLUE,THRESHOLD format (default: 0,255,0,100). \
+            The transparent mask is applied to pixels with a euclidean distance below the threshold. \
+            If mask is used and the format does not support RGBA, the output format will be PNG.",
     )
 
     args = parser.parse_args()
@@ -179,12 +206,11 @@ def main():
     output_directory = setup_output_directory(args.output)
     ignore_extensions = [f".{ext.lstrip('.')}" for ext in args.ignore]
     input_files = get_absolute_paths(args.input, ignore_extensions)
-    print(args.size)
 
     success_count = sum(
         1
         for success in input_files
-        if process_image(success, output_directory, args.format, args.size)
+        if process_image(success, output_directory, args.format, args.size, args.mask)
     )
 
     print(
@@ -192,19 +218,6 @@ def main():
         f"{f"View results in {output_directory}." if (success_count > 0) else 'No images were processed.'}"
 
     )
-
-    # Parse the size argument
-    # try:
-    #     width, height = map(int, args.size.split("x"))
-    # except ValueError:
-    #     parser.error("Size must be in WIDTHxHEIGHT format, e.g., 64x64")
-
-    # Ensure the output directory exists
-    # os.makedirs(os.path.dirname(args.output), exist_ok=True)
-
-    # Convert the image
-    # convert_image(args.input, args.output, (width, height), args.transparent_green, args.format)
-
 
 if __name__ == "__main__":
     main()
