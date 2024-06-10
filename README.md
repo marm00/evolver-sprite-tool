@@ -29,7 +29,7 @@ Processed 1/1 images in 0.04 seconds. View results in {absolute path}\out.
 $ python evolver.py -f PNG -s 128x128
 Processed 1/1 images in 0.05 seconds. View results in {absolute path}\out.
 
-$ python evolver.py -m 255,0,0,500
+$ python evolver.py -m 255,0,0,50
 Processed 1/1 images in 0.04 seconds. View results in {absolute path}\out.
 ```
 
@@ -38,13 +38,13 @@ Processed 1/1 images in 0.04 seconds. View results in {absolute path}\out.
 The tool recognizes these options:
 
 | Option | Description | Default |
-| --- | --- | --- |
-| `-i`, `--input` | The file(s) to process (file name, directory name, or [glob pattern](https://docs.python.org/3/library/glob.html)) | `./in` |
-| `-o`, `--output` | The output folder for the processed images | `./out` |
+| :---: | --- | :---: |
+| `-i` or `--input` | The file(s) to process (file name, directory name, or [glob pattern](https://docs.python.org/3/library/glob.html)) | `./in` |
+| `-o` or `--output` | The output folder for the processed images | `./out` |
 | `--ignore` | File extensions to ignore (e.g., txt jpg .zip .png) | `gitkeep` |
-| `-f`, `--format` | Override the inferred output image format, defaults to PNG if mask is used and the provided format does not support RGBA | `None` |
-| `-s`, `--size` | The output image size in WIDTHxHEIGHT format (e.g. 64x64) | `64x64` |
-| `-m`, `--mask` | Transparentize pixels matching this mask in RED,GREEN,BLUE,THRESHOLD format (e.g. 0,255,0,100). The transparent mask is applied to pixels with a [euclidean distance](https://en.wikipedia.org/wiki/Euclidean_distance) below the threshold. If mask is used and the final format does not support RGBA, the output format will be PNG. | `(0,255,0,100)` |
+| `-f` or `--format` | Override the inferred output image format, defaults to PNG if mask is used and the provided format does not support RGBA | `None` |
+| `-s` or `--size` | The output image size in WIDTHxHEIGHT format (e.g. 64x64) | `64x64` |
+| `-m` or `--mask` | Transparentize pixels matching this mask in RED,GREEN,BLUE,THRESHOLD format (e.g. 0,255,0,100). The transparent mask is applied to pixels with a [euclidean distance](https://en.wikipedia.org/wiki/Euclidean_distance) below the threshold. If mask is used and the final format does not support RGBA, the output format will be PNG | `(0,255,0,100)` |
 
 ### Requirements
 
