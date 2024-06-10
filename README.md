@@ -44,7 +44,7 @@ The tool recognizes these options:
 | `--ignore` | File extensions to ignore (e.g., txt jpg .zip .png) | `gitkeep` |
 | `-f`, `--format` | Override the inferred output image format, defaults to PNG if mask is used and the final format does not support RGBA | `None` |
 | `-s`, `--size` | The output image size in WIDTHxHEIGHT format (e.g. 64x64) | `64x64` |
-| `-m`, `--mask` | Transparentize pixels matching this mask in RED,GREEN,BLUE,THRESHOLD format (e.g. 0,255,0,100). The transparent mask is applied to pixels with a [euclidean distance](https://en.wikipedia.org/wiki/Euclidean_distance) below the threshold. If mask is used and the final format does not support RGBA, the output format will be PNG | `(0,255,0,100)` |
+| `-m`, `--mask` | Transparentize pixels matching this mask in RED,GREEN,BLUE,THRESHOLD format (e.g. 0,255,0,100). The transparent mask is applied to pixels with a [euclidean distance](https://en.wikipedia.org/wiki/Euclidean_distance) below the threshold. If mask is used and the final format does not support RGBA, the output format will be PNG | `0,255,0,100` |
 
 ### Requirements
 
