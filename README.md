@@ -45,12 +45,17 @@ The tool recognizes these options:
 | `-f`, `--format` | Override the inferred output image format *([note](#note))* | `None` |
 | `-s`, `--size` | The output image size in WIDTHxHEIGHT format | `64x64` |
 | `-m`, `--mask` | Turn pixels transparent if similar to the defined mask *([note](#note))* | `0,255,0,100` |
+| `-c`, `--center` | Center the image, ensure that `--mask` matches the background *([note](#note))* | `True` |
 
 #### Note
 
 Not all image formats support the **A**lpha channel in RGB**A**. This program changes the destination file extension to PNG for transparentization when the file extension or `--format` is not one of PNG, TIFF, WEBP, or GIF.
 
 For each image pixel, the [euclidean distance](https://en.wikipedia.org/wiki/Euclidean_distance) is calculated from its RGB values to the provided mask RGB (like full green at 0,255,0). If this distance is shorter than the provided threshold, the pixel is converted to 255,255,255,0.
+
+For centering to work, a clear separation between the background and the foreground is required. This separation should be reflected in the `--mask` value.
+For instance, if the foreground is black and the background is white, the `--mask` value should be `255,255,255,100`. For
+
 ### Requirements
 
 - Python 3.9 or higher *(determined with [vermin](https://github.com/netromdk/vermin))*  

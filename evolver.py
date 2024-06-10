@@ -81,8 +81,7 @@ def convert_image(input_arg, output_path, size, mask, format):
         img.save(output_path, format)
 
 def process_image(
-    file_path: str, output_directory: str, format: str, size: tuple[int, int], mask: tuple[tuple[int, int, int], int]
-) -> bool:
+    file_path: str, output_directory: str, format: str, size: tuple[int, int], mask: tuple[tuple[int, int, int], int], center: bool) -> bool:
     def skip(message):
         formatted_error = f"WARNING: Skipping {file_path} because {message}"
         print(formatted_error)
@@ -105,10 +104,20 @@ def process_image(
                 for item in data:
                     euclidean_distance = math.sqrt(sum((a - b) ** 2 for a, b in zip(item[:3], mask_rgb)))
                     if euclidean_distance < mask_threshold:
-                        new_data.append((255, 255, 255, 0))  # Transparent
+                        new_data.append((255, 255, 255, 0))
                     else:
                         new_data.append(item)
                 img.putdata(new_data)
+                
+                if center:
+                    bbox = img.getbbox()
+                    if bbox:
+                        cropped_img = img.crop(bbox)
+                        canvas = Image.new("RGBA", size, (255, 255, 255, 0))
+                        x = (size[0] - cropped_img.width) // 2
+                        y = (size[1] - cropped_img.height) // 2
+                        canvas.paste(cropped_img, (x, y))
+                        img = canvas
 
             try:
                 img.save(new_file_path, format)
@@ -197,6 +206,13 @@ def main():
         default=((0, 255, 0), 100),
         help="Transparentize pixels matching this mask (RED,GREEN,BLUE,THRESHOLD) (default: 0,255,0,100).",
     )
+    parser.add_argument(
+        "-c",
+        "--center",
+        action="store_true",
+        default=True,
+        help="Center the image, ensure that --mask matches the background (default: True).",
+    )
 
     args = parser.parse_args()
 
@@ -207,7 +223,7 @@ def main():
     success_count = sum(
         1
         for success in input_files
-        if process_image(success, output_directory, args.format, args.size, args.mask)
+        if process_image(success, output_directory, args.format, args.size, args.mask, args.center)
     )
 
     print(
