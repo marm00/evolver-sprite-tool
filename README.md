@@ -37,6 +37,8 @@ The tool recognizes these options:
 | `-f`, `--format` | The image format to convert to (e.g. PNG, JPEG, BMP) | `PNG` |
 | `--ignore` | File extensions to ignore (e.g., txt md .zip .png) | `['gitkeep']` |
 
+| `-s`, `--size` | The output image size in WIDTHxHEIGHT format (e.g. 64x64) | `64x64` |
+
 ### Requirements
 
 - Python 3.9 or higher *(determined with [vermin](https://github.com/netromdk/vermin))*  

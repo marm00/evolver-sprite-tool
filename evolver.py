@@ -60,7 +60,7 @@ def convert_image(input_arg, output_path, size, transparent_green, format):
         img.save(output_path, format)
 
 
-def setup_output_directory(output_path):
+def setup_output_directory(output_path: str) -> str:
     if not os.path.isdir(output_path):
         try:
             os.makedirs(output_path, exist_ok=True)
@@ -69,27 +69,37 @@ def setup_output_directory(output_path):
     return os.path.abspath(output_path)
 
 
-def process_image(path) -> bool:
+def process_image(file_path: str, size: tuple[int, int]) -> bool:
     error_message = ""
 
     def skip(message):
-        formatted_error = f"WARNING: Skipping {path} because {message}"
+        formatted_error = f"WARNING: Skipping {file_path} because {message}"
         print(formatted_error)
         return formatted_error
 
     try:
-        with Image.open(path) as img:
-            print(img.size)
+        with Image.open(file_path) as img:
+            print(f"target size: {size} and img size: {img.size}")
     except FileNotFoundError:
         error_message = skip(f"the file cannot be found.")
     except Image.UnidentifiedImageError:
         error_message = skip(f"the found file cannot be opened and identified.")
     except ValueError:
-        error_message = skip(f"the 'mode' is not r, or a StringIO instance is used for 'fp'.")
+        error_message = skip(
+            f"the 'mode' is not r, or a StringIO instance is used for 'fp'."
+        )
     except TypeError:
         error_message = skip(f"'formats' is not None, a list or a tuple.")
 
     return False if error_message else True
+
+
+def size_type(size: str) -> tuple[int, int]:
+    try:
+        width, height = map(int, size.split("x"))
+        return (width, height)
+    except ValueError:
+        raise argparse.ArgumentTypeError("Size must be in WIDTHxHEIGHT format.")
 
 
 def main():
@@ -128,8 +138,8 @@ def main():
     parser.add_argument(
         "-s",
         "--size",
-        type=str,
-        default="64x64",
+        type=size_type,
+        default=(64, 64),
         help="Output image size in WIDTHxHEIGHT format (default: 64x64).",
     )
     parser.add_argument(
@@ -144,8 +154,9 @@ def main():
     output_path = setup_output_directory(args.output)
     ignore_extensions = [f".{ext.lstrip('.')}" for ext in args.ignore]
     input_files = get_absolute_paths(args.input, ignore_extensions)
+    print(args.size)
 
-    success_count = sum(1 for success in input_files if process_image(success))
+    success_count = sum(1 for success in input_files if process_image(success, args.size))
 
     print(
         f"Processed {success_count}/{len(input_files)} images in {time.time() - start_time:.2f} seconds. "
