@@ -35,8 +35,8 @@ The tool recognizes these options:
 | --- | --- | --- |
 | `-i`, `--input` | The file(s) to process (file name, directory name, or [glob pattern](https://docs.python.org/3/library/glob.html)) | `./in` |
 | `-o`, `--output` | The output folder for the processed images | `./out` |
-| `--ignore` | File extensions to ignore (e.g., txt md .zip .png) | `['gitkeep']` |
-| `-f`, `--format` | The image format to convert to (e.g. PNG, JPEG, BMP) | `PNG` |
+| `--ignore` | File extensions to ignore (e.g., txt md .zip .png) | `gitkeep` |
+| `-f`, `--format` | Override the inferred output image format (e.g. PNG, JPEG, BMP) | `None` |
 | `-s`, `--size` | The output image size in WIDTHxHEIGHT format (e.g. 64x64) | `64x64` |
 
 ### Requirements
