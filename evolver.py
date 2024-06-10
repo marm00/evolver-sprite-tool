@@ -181,8 +181,7 @@ def main():
         "--format",
         type=str,
         default=None,
-        help="Override the inferred output image format (e.g., PNG, JPEG, BMP). \
-            If mask is used and the format does not support RGBA, the output format will be PNG.",
+        help="Override the inferred output image format (e.g., PNG, JPEG, BMP).",
     )
     parser.add_argument(
         "-s",
@@ -196,9 +195,7 @@ def main():
         "--mask",
         type=mask_type,
         default=((0, 255, 0), 100),
-        help="Transparentize pixels matching this mask in RED,GREEN,BLUE,THRESHOLD format (default: 0,255,0,100). \
-            The transparent mask is applied to pixels with a euclidean distance below the threshold. \
-            If mask is used and the format does not support RGBA, the output format will be PNG.",
+        help="Transparentize pixels matching this mask (RED,GREEN,BLUE,THRESHOLD) (default: 0,255,0,100).",
     )
 
     args = parser.parse_args()
