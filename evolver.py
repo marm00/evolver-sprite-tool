@@ -6,59 +6,27 @@ from PIL import Image
 
 
 def get_absolute_paths(input: str, ignore: list[str]) -> list[str]:
-    """
-    Get absolute paths for files in a directory or matching a glob pattern.
+    found_paths = glob.glob(os.path.abspath(input), recursive=True)
+    found_files = set()
 
-    Args:
-        input (str): The input string representing a file name, directory name, or glob pattern.
-        ignore (list[str]): A list of file extensions to ignore. Extensions should include the period (e.g., ".txt").
+    def include_file(file_path: str) -> None:
+        if not os.path.isabs(file_path):
+            file_path = os.path.abspath(file_path)
+        if not (ignore and any(file_path.endswith(ext) for ext in ignore)):
+            found_files.add(file_path)
 
-    Returns:
-        list[str]: A list of absolute paths for files that match the input, excluding those with ignored extensions.
-    """
-    input = os.path.abspath(input)
-    matched_paths = glob.glob(input)
-    all_files = set()
-
-    for path in matched_paths:
+    for path in found_paths:
         if os.path.isdir(path):
             for root, _, files in os.walk(path):
                 for file in files:
                     file_path = os.path.join(root, file)
-                    all_files.add(file_path)
+                    include_file(file_path)
         elif os.path.isfile(path):
-            all_files.add(path)
+            include_file(path)
+        else:
+            print(f"WARNING: Unexpected behavior for {path} - expected a directory or file.")
 
-    filtered_files = [
-        file for file in all_files if not any(file.endswith(ext) for ext in ignore)
-    ]
-
-    absolute_paths = [os.path.abspath(file) for file in filtered_files]
-    return absolute_paths
-
-
-def convert_image(input_arg, output_path, size, transparent_green, format):
-    # Open an image file
-    with Image.open(input_arg) as img:
-        # Resize the image
-        img = img.resize(size, Image.ANTIALIAS)
-
-        # Convert green pixels to transparent
-        if transparent_green:
-            img = img.convert("RGBA")
-            data = img.getdata()
-            new_data = []
-            for item in data:
-                # Change all green (0, 255, 0) pixels to transparent
-                if item[0] == 0 and item[1] == 255 and item[2] == 0:
-                    new_data.append((255, 255, 255, 0))
-                else:
-                    new_data.append(item)
-            img.putdata(new_data)
-
-        # Save the image
-        img.save(output_path, format)
-
+    return found_files
 
 def setup_output_directory(output_path: str) -> str:
     if not os.path.isdir(output_path):
@@ -86,6 +54,28 @@ def valid_output_file(output_directory: str, file_path: str, format: str) -> str
         new_path_file = f"{file_root}.{format.lower()}"
 
     return new_path_file
+
+def convert_image(input_arg, output_path, size, transparent_green, format):
+    # Open an image file
+    with Image.open(input_arg) as img:
+        # Resize the image
+        img = img.resize(size, Image.ANTIALIAS)
+
+        # Convert green pixels to transparent
+        if transparent_green:
+            img = img.convert("RGBA")
+            data = img.getdata()
+            new_data = []
+            for item in data:
+                # Change all green (0, 255, 0) pixels to transparent
+                if item[0] == 0 and item[1] == 255 and item[2] == 0:
+                    new_data.append((255, 255, 255, 0))
+                else:
+                    new_data.append(item)
+            img.putdata(new_data)
+
+        # Save the image
+        img.save(output_path, format)
 
 def process_image(
     file_path: str, output_directory: str, format: str, size: tuple[int, int]

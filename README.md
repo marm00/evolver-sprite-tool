@@ -18,13 +18,16 @@ $ python evolver.py
 Processed 2/2 images in 0.00 seconds. View results in {absolute path}\out.
 
 $ python evolver.py -i D:/images/old -o D:/images/new
-Processed 2/2 images in 0.00 seconds. View results in D:\images\new.
+Processed 2/2 images in 0.07 seconds. View results in D:\images\new.
 
-$ python evolver.py -i **/*.webp -o .\newfolder
-Processed 1/1 images in 0.00 seconds. View results in {absolute path}\newfolder.
+$ python evolver.py -i ./in/**/*.png -o .\newfolder
+Processed 9/9 images in 0.12 seconds. View results in {absolute path}\newfolder.
 
 $ python evolver.py -i ./in/wolf/*grey*.jpeg --ignore txt .zip png
-Processed 1/1 images in 0.00 seconds. View results in .\out.
+Processed 1/1 images in 0.04 seconds. View results in .\out.
+
+$ python evolver.py -f PNG -s 128x128
+Processed 1/1 images in 0.05 seconds. View results in .\out.
 ```
 
 ### Option Summary
