@@ -1,5 +1,6 @@
-# Evolver Sprite Tool: generating standardized assets for Evolver
+# Evolver Sprite Tool
 
+Generating standardized assets for [Evolver](https://github.com/marm00/evolver).
 This is a command line tool for opinionated image manipulation with type conversion, scaling, and chroma keying.
 
 ## Usage
@@ -27,4 +28,5 @@ The tool recognizes these options:
 
 ### Requirements
 
-- Python 3.9 or higher *(determined with `vermin t=3.7- --backport argparse --eval-annotations --no-parse-comments`)*
+- Python 3.9 or higher *(determined with [vermin](https://github.com/netromdk/vermin):  
+`vermin t=3.7- --backport argparse --eval-annotations --no-parse-comments`)*
