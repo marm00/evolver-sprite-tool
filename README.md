@@ -38,13 +38,13 @@ Processed 1/1 images in 0.04 seconds. View results in {absolute path}\out.
 The tool recognizes these options:
 
 | Option | Description | Default |
-| --- | --- | :---: |
+| :---: | --- | :---: |
 | `-i` or `--input` | The file(s) to process (file name, directory name, or [glob pattern](https://docs.python.org/3/library/glob.html)) | `./in` |
-| `-o` or `--output` | The output folder for the processed images | `./out` |
+| `-o` or `--output`<br>| The output folder for the processed images | `./out` |
 | `--ignore` | File extensions to ignore (e.g., txt jpg .zip .png) | `gitkeep` |
-| `-f` or `--format` | Override the inferred output image format, defaults to PNG if mask is used and the provided format does not support RGBA | `None` |
-| `-s` or `--size` | The output image size in WIDTHxHEIGHT format (e.g. 64x64) | `64x64` |
-| `-m` or `--mask` | Transparentize pixels matching this mask in RED,GREEN,BLUE,THRESHOLD format (e.g. 0,255,0,100). The transparent mask is applied to pixels with a [euclidean distance](https://en.wikipedia.org/wiki/Euclidean_distance) below the threshold. If mask is used and the final format does not support RGBA, the output format will be PNG | `(0,255,0,100)` |
+| `-f` or `--format` | <br>verride the inferred output image format, defaults to PNG if mask is used and the provided format does not support RGBA | `None` |
+| `-s` or `--size` | The o<br>tput image size in WIDTHxHEIGHT format (e.g. 64x64) | `64x64` |
+| `-m` or `--mask` | Transpar<br>ntize pixels matching this mask in RED,GREEN,BLUE,THRESHOLD format (e.g. 0,255,0,100). The transparent mask is applied to pixels with a [euclidean distance](https://en.wikipedia.org/wiki/Euclidean_distance) below the threshold. If mask is used and the final format does not support RGBA, the output format will be PNG | `(0,255,0,100)` |
 
 ### Requirements
 
