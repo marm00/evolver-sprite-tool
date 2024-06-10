@@ -14,16 +14,16 @@ This is a command line tool for opinionated image manipulation with type convers
 ### Examples
 
 ```console
-$ python main.py
+$ python evolver.py
 Processed 2 image(s) in 0.00 seconds. View results in ./out.
 
-$ python main.py -i D:\images
+$ python evolver.py -i D:\images
 Processed 2 image(s) in 0.00 seconds. View results in ./out.
 
-$ python main.py -i **/*.webp -o ./newfolder
+$ python evolver.py -i **/*.webp -o ./newfolder
 Processed 1 image(s) in 0.00 seconds. View results in ./newfolder.
 
-$ python main.py -i ./in/wolf/*grey*.jpeg
+$ python evolver.py -i ./in/wolf/*grey*.jpeg
 Processed 1 image(s) in 0.00 seconds. View results in ./out.
 ```
 
