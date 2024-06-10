@@ -1,6 +1,6 @@
 # Evolver Sprite Tool
 
-Generating standardized assets for [Evolver](https://github.com/marm00/evolver).
+Transform images into standardized assets for [Evolver](https://github.com/marm00/evolver).
 
 This is a command line tool for opinionated image manipulation with type conversion, scaling, and chroma keying.
 
@@ -13,9 +13,18 @@ This is a command line tool for opinionated image manipulation with type convers
 
 ### Examples
 
-```sh
-$ python main.py -i ./in/*.webp -o ./out
-Processed 1 image(s) in 0.00 seconds. View ./out for details.
+```console
+$ python main.py
+Processed 2 image(s) in 0.00 seconds. View results in ./out.
+
+$ python main.py -i D:\images
+Processed 2 image(s) in 0.00 seconds. View results in ./out.
+
+$ python main.py -i **/*.webp -o ./newfolder
+Processed 1 image(s) in 0.00 seconds. View results in ./newfolder.
+
+$ python main.py -i ./in/wolf/*grey*.jpeg
+Processed 1 image(s) in 0.00 seconds. View results in ./out.
 ```
 
 ### Option Summary
