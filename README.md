@@ -50,3 +50,5 @@ The tool recognizes these options:
 
 - Python 3.9 or higher *(determined with [vermin](https://github.com/netromdk/vermin))*  
 `vermin t=3.7- --backport argparse --eval-annotations --no-parse-comments .`
+- Install the packages listed in [requirements.txt](./requirements.txt)  
+  `pip install -r requirements.txt`
