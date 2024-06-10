@@ -15,16 +15,16 @@ This is a command line tool for opinionated image manipulation with type convers
 
 ```console
 $ python evolver.py
-Processed 2 image(s) in 0.00 seconds. View results in ./out.
+Processed 2 image(s) in 0.00 seconds. View results in {absolute path}\out.
 
-$ python evolver.py -i D:\images
-Processed 2 image(s) in 0.00 seconds. View results in ./out.
+$ python evolver.py -i D:/images/old -o D:/images/new
+Processed 2 image(s) in 0.00 seconds. View results in D:\images\new.
 
-$ python evolver.py -i **/*.webp -o ./newfolder
-Processed 1 image(s) in 0.00 seconds. View results in ./newfolder.
+$ python evolver.py -i **/*.webp -o .\newfolder
+Processed 1 image(s) in 0.00 seconds. View results in {absolute path}\newfolder.
 
 $ python evolver.py -i ./in/wolf/*grey*.jpeg
-Processed 1 image(s) in 0.00 seconds. View results in ./out.
+Processed 1 image(s) in 0.00 seconds. View results in .\out.
 ```
 
 ### Option Summary
@@ -33,10 +33,10 @@ The tool recognizes these options:
 
 | Option | Description | Default |
 | --- | --- | --- |
-| `-i`, `--input` | The file(s) to process (file name, directory name, or regex pattern) | `./in` |
+| `-i`, `--input` | The file(s) to process (file name, directory name, or [glob pattern](https://docs.python.org/3/library/glob.html)) | `./in` |
 | `-f`, `--format` | The image format to convert to (e.g. PNG, JPEG, BMP) | `PNG` |
 
 ### Requirements
 
 - Python 3.9 or higher *(determined with [vermin](https://github.com/netromdk/vermin))*  
-`vermin t=3.7- --backport argparse --eval-annotations --no-parse-comments`
+`vermin t=3.7- --backport argparse --eval-annotations --no-parse-comments .`

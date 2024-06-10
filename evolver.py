@@ -6,18 +6,16 @@ from PIL import Image
 
 def get_absolute_paths(input: str, ignore: list[str]) -> list[str]:
     """
-    Get absolute paths for files in a directory or matching a pattern.
+    Get absolute paths for files in a directory or matching a glob pattern.
 
     Args:
-        input (str): The input string representing a file name, directory name, or pattern (e.g., glob pattern).
+        input (str): The input string representing a file name, directory name, or glob pattern.
         ignore (list[str]): A list of file extensions to ignore. Extensions should include the period (e.g., ".txt").
 
     Returns:
         list[str]: A list of absolute paths for files that match the input, excluding those with ignored extensions.
     """
-    if not os.path.isabs(input):
-        input = os.path.abspath(input)
-
+    input = os.path.abspath(input)
     matched_paths = glob.glob(input)
     all_files = set()
 
@@ -29,6 +27,8 @@ def get_absolute_paths(input: str, ignore: list[str]) -> list[str]:
                     all_files.add(file_path)
         elif os.path.isfile(path):
             all_files.add(path)
+        else:
+            print(f"Warning: Skipping {path} because it is not a file or directory.")
 
     filtered_files = [
         file for file in all_files if not any(file.endswith(ext) for ext in ignore)
@@ -59,6 +59,15 @@ def convert_image(input_arg, output_path, size, transparent_green, format):
 
         # Save the image
         img.save(output_path, format)
+
+
+def setup_output_directory(output_path):
+    if not os.path.isdir(output_path):
+        try:
+            os.makedirs(output_path, exist_ok=True)
+        except OSError as e:
+            raise Exception(f"Incorrect format for output path: {e}")
+    return os.path.abspath(output_path)
 
 
 def main():
@@ -109,11 +118,8 @@ def main():
 
     args = parser.parse_args()
 
-    output_path = (
-        args.ouput if os.path.isabs(args.output) else os.path.abspath(args.output)
-    )
+    output_path = setup_output_directory(args.output)
     ignore_extensions = [f".{ext.lstrip('.')}" for ext in args.ignore]
-
     input_files = get_absolute_paths(args.input, ignore_extensions)
     for path in input_files:
         print(path)
