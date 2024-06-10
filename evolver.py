@@ -1,6 +1,7 @@
 import argparse
 import glob
 import os
+import time
 from PIL import Image
 
 
@@ -27,8 +28,6 @@ def get_absolute_paths(input: str, ignore: list[str]) -> list[str]:
                     all_files.add(file_path)
         elif os.path.isfile(path):
             all_files.add(path)
-        else:
-            print(f"Warning: Skipping {path} because it is not a file or directory.")
 
     filtered_files = [
         file for file in all_files if not any(file.endswith(ext) for ext in ignore)
@@ -70,7 +69,31 @@ def setup_output_directory(output_path):
     return os.path.abspath(output_path)
 
 
+def process_image(path) -> bool:
+    error_message = ""
+
+    def skip(message):
+        formatted_error = f"WARNING: Skipping {path} because {message}"
+        print(formatted_error)
+        return formatted_error
+
+    try:
+        with Image.open(path) as img:
+            print(img.size)
+    except FileNotFoundError:
+        error_message = skip(f"the file cannot be found.")
+    except Image.UnidentifiedImageError:
+        error_message = skip(f"the found file cannot be opened and identified.")
+    except ValueError:
+        error_message = skip(f"the 'mode' is not r, or a StringIO instance is used for 'fp'.")
+    except TypeError:
+        error_message = skip(f"'formats' is not None, a list or a tuple.")
+
+    return False if error_message else True
+
+
 def main():
+    start_time = time.time()
     parser = argparse.ArgumentParser(
         description="Evolver CLI Tool for Image Standardization."
     )
@@ -89,11 +112,11 @@ def main():
         help="Directory for output images. Defaults to './out'.",
     )
     parser.add_argument(
-        "-s",
-        "--size",
+        "--ignore",
         type=str,
-        default="64x64",
-        help="Output image size in WIDTHxHEIGHT format (default: 64x64).",
+        nargs="*",
+        default=["gitkeep"],
+        help="File extensions to ignore (e.g., txt md .zip .png). Defaults to ['gitkeep'].",
     )
     parser.add_argument(
         "-f",
@@ -103,17 +126,17 @@ def main():
         help="Output image format (default: PNG). Make sure to capitalize the extension and exclude the period.",
     )
     parser.add_argument(
+        "-s",
+        "--size",
+        type=str,
+        default="64x64",
+        help="Output image size in WIDTHxHEIGHT format (default: 64x64).",
+    )
+    parser.add_argument(
         "-t",
         "--transparent-green",
         action="store_true",
         help="Convert green pixels (0,255,0) to transparent.",
-    )
-    parser.add_argument(
-        "--ignore",
-        type=str,
-        nargs="*",
-        default=["gitkeep"],
-        help="File extensions to ignore (e.g., txt md). Defaults to ['gitkeep'].",
     )
 
     args = parser.parse_args()
@@ -121,14 +144,19 @@ def main():
     output_path = setup_output_directory(args.output)
     ignore_extensions = [f".{ext.lstrip('.')}" for ext in args.ignore]
     input_files = get_absolute_paths(args.input, ignore_extensions)
-    for path in input_files:
-        print(path)
+
+    success_count = sum(1 for success in input_files if process_image(success))
+
+    print(
+        f"Processed {success_count}/{len(input_files)} images in {time.time() - start_time:.2f} seconds. "
+        f"{'View results in {output_path}.' if (success_count > 0) else 'No images were processed.'}"
+    )
 
     # Parse the size argument
-    try:
-        width, height = map(int, args.size.split("x"))
-    except ValueError:
-        parser.error("Size must be in WIDTHxHEIGHT format, e.g., 64x64")
+    # try:
+    #     width, height = map(int, args.size.split("x"))
+    # except ValueError:
+    #     parser.error("Size must be in WIDTHxHEIGHT format, e.g., 64x64")
 
     # Ensure the output directory exists
     # os.makedirs(os.path.dirname(args.output), exist_ok=True)
