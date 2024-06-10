@@ -68,7 +68,7 @@ def setup_output_directory(output_path: str) -> str:
             raise Exception(f"Incorrect format for output path: {e}")
     return os.path.abspath(output_path)
 
-def valid_output_file(output_directory: str, file_path: str, format: str) -> bool:
+def valid_output_file(output_directory: str, file_path: str, format: str) -> str | bool:
     new_path_file = os.path.join(output_directory, os.path.basename(file_path))
     temp_file_path = f"{new_path_file}.tmp"
 
@@ -102,8 +102,8 @@ def process_image(
 
     try:
         with Image.open(file_path) as img:
-            print(f"target size: {size} and img size: {img.size}")
-            print(f"type is {format}")
+            print(f"Processing {file_path}")
+            img = img.resize(size, Image.LANCZOS)
             try:
                 img.save(new_file_path, format)
             except KeyError:
@@ -113,12 +113,12 @@ def process_image(
                     "the output format could not be determined from the file name."
                 )
             except OSError:
-                error_message = skip("the output file could not be written.")
+                error_message = skip("the output file could not be written (it still might be created!).")
 
     except FileNotFoundError:
         error_message = skip("the file cannot be found.")
     except Image.UnidentifiedImageError:
-        error_message = skip("the found file cannot be opened and identified.")
+        error_message = skip("the found file cannot be opened and identified, inspect the image manually.")
     except ValueError:
         error_message = skip(
             "the 'mode' is not r, or a StringIO instance is used for 'fp'."
