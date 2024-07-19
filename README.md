@@ -1,8 +1,8 @@
 # Evolver Sprite Tool
 
-Transform images into standardized assets for [Evolver](https://github.com/marm00/evolver).
+Command line tool to standardize images with [PIL](https://pillow.readthedocs.io/), discontinued.
 
-This is a command line tool for opinionated image manipulation with [PIL](https://pillow.readthedocs.io/).
+Only supports basic operations for now.
 
 ## Usage
 
